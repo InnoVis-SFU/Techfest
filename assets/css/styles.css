@@ -128,17 +128,42 @@ a:hover {
   color: var(--purple);
 }
 
-/* Hero */
-.hero {
-  background: linear-gradient(135deg, #d8f3dc 0%, #e0aaff 100%);
-  padding: 3rem 0 4rem;
+/* Homepage */
+body.page-home {
+  background: #f4f4f4;
 }
 
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  align-items: center;
+body.page-home .site-header {
+  background: #f4f4f4;
+  border-bottom-color: #e0e0e0;
+}
+
+body.page-home .funders,
+body.page-home .projects-section {
+  background: transparent;
+}
+
+/* Hero */
+.hero {
+  background: #f4f4f4;
+  padding: 0;
+}
+
+.hero-banner {
+  width: 100%;
+  line-height: 0;
+}
+
+.hero-banner img {
+  width: 100%;
+  max-width: none;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.hero-intro {
+  padding: 2.5rem 0 3rem;
 }
 
 .eyebrow {
@@ -167,11 +192,6 @@ a:hover {
 
 .event-details p {
   margin: 0.25rem 0;
-}
-
-.hero-visual img {
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
 }
 
 /* Sections */
@@ -515,10 +535,6 @@ a:hover {
   .site-nav ul {
     flex-direction: column;
     gap: 0.75rem;
-  }
-
-  .hero-grid {
-    grid-template-columns: 1fr;
   }
 
   .footer-inner {

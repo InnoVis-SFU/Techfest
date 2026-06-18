@@ -238,8 +238,16 @@ def nav(current: str, prefix: str = "") -> str:
     return "\n".join(links)
 
 
-def page_shell(title: str, current: str, body: str, prefix: str = "", depth: int = 0) -> str:
+def page_shell(
+    title: str,
+    current: str,
+    body: str,
+    prefix: str = "",
+    depth: int = 0,
+    body_class: str = "",
+) -> str:
     base = "../" * depth if depth else ""
+    body_attr = f' class="{body_class}"' if body_class else ""
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -253,7 +261,7 @@ def page_shell(title: str, current: str, body: str, prefix: str = "", depth: int
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{base}assets/css/styles.css">
 </head>
-<body>
+<body{body_attr}>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="container header-inner">
@@ -308,21 +316,19 @@ def build_index() -> str:
 
     body = f"""
     <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">CoDesign Explore</p>
-          <h1>Tech Fest</h1>
-          <div class="event-details">
-            <h2>Date &amp; time</h2>
-            <p><strong>July 31, 2024</strong></p>
-            <p>Morning session: 10:00 AM – 12:00 PM (Invitation only)</p>
-            <p>Afternoon Session: 2:00 – 4:00 PM (Everyone is welcome)</p>
-            <h2>Location</h2>
-            <p>Room 660, Engineering &amp; Computer Science Building, University of Victoria</p>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <img src="assets/images/hero-banner.png" alt="Tech Fest promotional banner with green and purple design">
+      <div class="hero-banner">
+        <img src="assets/images/hero-banner.png" alt="Tech Fest promotional banner with green and purple design">
+      </div>
+      <div class="hero-intro container">
+        <p class="eyebrow">In memory of</p>
+        <h1>Tech Fest</h1>
+        <div class="event-details">
+          <h2>Date &amp; time</h2>
+          <p><strong>July 31, 2024</strong></p>
+          <p>Morning session: 10:00 AM – 12:00 PM (Invitation only)</p>
+          <p>Afternoon Session: 2:00 – 4:00 PM (Everyone is welcome)</p>
+          <h2>Location</h2>
+          <p>Room 660, Engineering &amp; Computer Science Building, University of Victoria</p>
         </div>
       </div>
     </section>
@@ -357,7 +363,7 @@ def build_index() -> str:
       </div>
     </section>
     """
-    return page_shell("Home", "home", body)
+    return page_shell("Home", "home", body, body_class="page-home")
 
 
 def build_organizers() -> str:
