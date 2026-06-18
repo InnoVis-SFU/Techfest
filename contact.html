@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Tech Fest</title>
+  <meta name="description" content="Tech Fest – exploring new technology from Simon Fraser University and University of Victoria.">
+  <link rel="icon" href="assets/images/logo-minimal.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/images/logo-bw.png" alt="Tech Fest logo" width="120" height="40">
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="site-nav" class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+<li><a href="organizers.html">Tech Fest Organizers</a></li>
+<li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    
+    <section class="section page-header">
+      <div class="container narrow">
+        <h1>Contact</h1>
+        <p class="lead">Let us know what you think!</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container narrow">
+        <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <div class="form-row">
+            <label for="first-name">First name</label>
+            <input id="first-name" name="first_name" type="text" autocomplete="given-name" required>
+          </div>
+          <div class="form-row">
+            <label for="last-name">Last name</label>
+            <input id="last-name" name="last_name" type="text" autocomplete="family-name" required>
+          </div>
+          <div class="form-row">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="form-row">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="6" required></textarea>
+          </div>
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+        <p class="contact-alt">Or email the organizers via the <a href="organizers.html">Organizers page</a>.</p>
+      </div>
+    </section>
+    
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <nav aria-label="Footer">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+<li><a href="organizers.html">Tech Fest Organizers</a></li>
+<li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+      </nav>
+      <p class="footer-note">Tech Fest · Simon Fraser University &amp; University of Victoria</p>
+    </div>
+  </footer>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
