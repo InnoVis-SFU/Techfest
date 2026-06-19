@@ -90,7 +90,7 @@ a:hover {
 }
 
 .brand img {
-  height: clamp(52px, 7vw, 72px);
+  height: clamp(44px, 5.5vw, 58px);
   width: auto;
 }
 
@@ -568,15 +568,23 @@ body.page-home .section.projects-section {
 
 .org-partners,
 .site-partners {
-  padding: 1.5rem 0 2rem;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border: none;
+  line-height: 0;
   background: #f4f4f4;
 }
 
 .partners-strip {
   width: 100%;
-  max-width: 100%;
+  max-width: none;
   height: auto;
   display: block;
+}
+
+.publication-link {
+  margin: 1rem 0 0;
 }
 
 .role {
@@ -586,11 +594,33 @@ body.page-home .section.projects-section {
 }
 
 /* Contact form */
+.contact-page {
+  padding: 1.5rem 0 3rem;
+}
+
+.contact-page-inner {
+  width: min(100% - 1rem, 1400px);
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: clamp(0.25rem, 1.5vw, 1rem);
+}
+
+.contact-page h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  margin: 0 0 0.35rem;
+  color: var(--green-dark);
+}
+
+.contact-page .lead {
+  margin: 0 0 1.25rem;
+}
+
 .contact-form {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 2rem;
+  padding: 1.5rem;
+  max-width: 560px;
 }
 
 .form-note {
@@ -629,7 +659,7 @@ body.page-home .section.projects-section {
 }
 
 .contact-alt {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   color: var(--muted);
 }
 
@@ -662,38 +692,45 @@ body.page-home .section.projects-section {
   color: var(--muted);
 }
 
-/* Footer */
-.site-footer {
-  background: var(--green-dark);
-  color: rgba(255, 255, 255, 0.85);
-  padding: 2rem 0;
-}
-
-.site-footer a {
-  color: #fff;
-}
-
-.footer-inner {
+.project-media-stack {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
-.site-footer ul {
-  display: flex;
-  gap: 1.25rem;
-  list-style: none;
+.project-media-item {
   margin: 0;
-  padding: 0;
 }
 
-.footer-note {
-  margin: 0;
-  font-size: 0.9rem;
-  opacity: 0.8;
+.project-media-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  object-fit: contain;
+  background: #fff;
 }
+
+.project-media-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: #000;
+}
+
+.project-media-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Footer — partners strip */
 
 @media (max-width: 1100px) {
   .project-grid {
@@ -755,16 +792,6 @@ body.page-home .section.projects-section {
   .site-nav ul {
     flex-direction: column;
     gap: 0.75rem;
-  }
-
-  .footer-inner {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .site-footer ul {
-    flex-direction: column;
-    gap: 0.5rem;
   }
 }
 

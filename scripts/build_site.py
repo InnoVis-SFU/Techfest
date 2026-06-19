@@ -41,6 +41,16 @@ IMAGE_MAP = {
     "d838ea_b9d5536b94dc470b92ba6dda5e95f76a~mv2.png": "project-womens-print-history.png",
 }
 
+MEDIA_JSON = Path(__file__).resolve().parent / "project_media.json"
+
+SITE_IMAGES = {
+    "007d85_c05db668dc1b4f7fa2bb8dc9bee80133~mv2.png",
+    "007d85_7782dfb2b6564e57bc7fdabebd256e50~mv2.jpg",
+    "007d85_b4274974a593411db5103c2c46fe555f~mv2.png",
+    "007d85_39fbb9be60fb498a972236f16cbc5d09~mv2.png",
+    "007d85_31122b9c45ea4c66a7aa96ef9b92d4f4~mv2.png",
+}
+
 PROJECTS = [
     {
         "num": "01",
@@ -181,6 +191,8 @@ PROJECTS = [
             "This data is very critical to the success of AI, so creators have potential leverage over companies and other bodies using AI. This project will aim to build a suite of tools to measure and communicate the value and potential of such data.",
         ],
         "publication": None,
+        "publication_url": "https://scholar.archive.org/work/e3giylpikvbcrakiv57g7ojwbe/access/wayback/https://arch.library.northwestern.edu/downloads/vm40xs06k",
+        "publication_link_text": "Read the Publication",
         "gallery": ["project-collective-action.png"],
     },
     {
@@ -201,6 +213,51 @@ PROJECTS = [
 ]
 
 
+def local_to_wix() -> dict[str, str]:
+    return {filename: media_id for media_id, filename in IMAGE_MAP.items()}
+
+
+def project_exclude_ids(project: dict) -> set[str]:
+    filename_to_wix = local_to_wix()
+    exclude = set(SITE_IMAGES)
+    for key in ("card_image", *project.get("gallery", [])):
+        wix_id = filename_to_wix.get(key)
+        if wix_id:
+            exclude.add(wix_id)
+    return exclude
+
+
+def media_local_name(slug: str, index: int, wix_id: str) -> str:
+    ext = wix_id.rsplit(".", 1)[-1]
+    return f"{slug}-media-{index:02d}.{ext}"
+
+
+def apply_project_media() -> None:
+    if not MEDIA_JSON.exists():
+        print(f"No {MEDIA_JSON.name}; run scripts/fetch_project_media.py first.")
+        return
+
+    raw = json.loads(MEDIA_JSON.read_text(encoding="utf-8"))
+    for project in PROJECTS:
+        slug = project["slug"]
+        entry = raw.get(slug, {})
+        exclude = project_exclude_ids(project)
+        wix_ids = [mid for mid in entry.get("images", []) if mid not in exclude]
+        local_images: list[str] = []
+
+        for index, wix_id in enumerate(wix_ids, start=1):
+            filename = media_local_name(slug, index, wix_id)
+            IMAGE_MAP[wix_id] = filename
+            local_images.append(filename)
+
+        video = entry.get("video")
+        if not local_images and not video:
+            local_images = list(project.get("gallery", []))
+
+        if local_images or video:
+            project["media"] = {"video": video, "images": local_images}
+
+
 def wix_url(media_id: str, width: int = 1200) -> str:
     ext = media_id.rsplit(".", 1)[-1]
     return (
@@ -218,7 +275,9 @@ def download_images() -> None:
     use_original = {
         name
         for name in IMAGE_MAP.values()
-        if name.startswith("funder-") or name.startswith("project-")
+        if name.startswith("funder-")
+        or name.startswith("project-")
+        or "-media-" in name
     }
     for media_id, filename in IMAGE_MAP.items():
         dest = ASSETS / filename
@@ -251,11 +310,9 @@ def nav(current: str, prefix: str = "") -> str:
 
 def partners_strip(base: str = "") -> str:
     return f"""
-  <section class="section site-partners" aria-label="Partner institutions">
-    <div class="container">
-      <img src="{base}assets/images/partners-strip.png" alt="Creative Coast, Simon Fraser University, and University of Victoria" class="partners-strip">
-    </div>
-  </section>"""
+  <footer class="site-partners" aria-label="Partner institutions">
+    <img src="{base}assets/images/partners-strip.png" alt="Creative Coast, Simon Fraser University, and University of Victoria" class="partners-strip">
+  </footer>"""
 
 
 def page_shell(
@@ -286,7 +343,7 @@ def page_shell(
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{base}index.html">
-        <img src="{base}assets/images/logo-techfest.png" alt="Tech Fest logo" width="100" height="72">
+        <img src="{base}assets/images/logo-techfest.png" alt="Tech Fest logo" width="81" height="58">
       </a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -302,16 +359,6 @@ def page_shell(
     {body}
   </main>
   {partners_strip(base)}
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <nav aria-label="Footer">
-        <ul>
-          {nav(current, prefix if depth else "")}
-        </ul>
-      </nav>
-      <p class="footer-note">Tech Fest · Simon Fraser University &amp; University of Victoria</p>
-    </div>
-  </footer>
   <script src="{base}assets/js/main.js"></script>
 </body>
 </html>
@@ -423,14 +470,10 @@ def build_organizers() -> str:
 
 def build_contact() -> str:
     body = """
-    <section class="section page-header">
-      <div class="container narrow">
+    <section class="section contact-page">
+      <div class="contact-page-inner">
         <h1>Contact</h1>
         <p class="lead">Let us know what you think!</p>
-      </div>
-    </section>
-    <section class="section">
-      <div class="container narrow">
         <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
           <div class="form-row">
             <label for="first-name">First name</label>
@@ -460,11 +503,46 @@ def build_contact() -> str:
 def build_project(p: dict) -> str:
     desc_html = "".join(f"<p>{esc(d)}</p>" for d in p["description"])
     pub_html = ""
-    if p.get("publication"):
+    if p.get("publication") or p.get("publication_url"):
+        pub_body = ""
+        if p.get("publication"):
+            pub_body += f'<p class="publication">{esc(p["publication"])}</p>'
+        if p.get("publication_url"):
+            link_text = p.get("publication_link_text", "Read the publication")
+            pub_body += (
+                f'<p class="publication-link"><a class="btn btn-outline" '
+                f'href="{esc(p["publication_url"])}" target="_blank" '
+                f'rel="noopener noreferrer">{esc(link_text)}</a></p>'
+            )
         pub_html = f"""
         <div class="project-block">
           <h2>Most Recent Publication</h2>
-          <p class="publication">{esc(p['publication'])}</p>
+          {pub_body}
+        </div>"""
+    media_html = ""
+    media = p.get("media")
+    if media:
+        items: list[str] = []
+        if media.get("video"):
+            items.append(
+                f"""
+            <figure class="project-media-item project-media-video">
+              <iframe src="{esc(media['video'])}" title="Project video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+            </figure>"""
+            )
+        for img in media.get("images", []):
+            items.append(
+                f"""
+            <figure class="project-media-item">
+              <img src="../assets/images/{esc(img)}" alt="" loading="lazy">
+            </figure>"""
+            )
+        if items:
+            media_html = f"""
+        <div class="project-block project-media">
+          <h2>Media</h2>
+          <div class="project-media-stack">{''.join(items)}
+          </div>
         </div>"""
     gallery_html = "".join(
         f'<img src="../assets/images/{esc(img)}" alt="" loading="lazy">' for img in p.get("gallery", [])
@@ -486,6 +564,7 @@ def build_project(p: dict) -> str:
           {desc_html}
         </div>
         {pub_html}
+        {media_html}
         <p><a class="btn btn-outline" href="../index.html#projects">← Back to all projects</a></p>
       </div>
     </section>
@@ -494,6 +573,7 @@ def build_project(p: dict) -> str:
 
 
 def main() -> None:
+    apply_project_media()
     download_images()
     PROJECTS_DIR.mkdir(parents=True, exist_ok=True)
 
