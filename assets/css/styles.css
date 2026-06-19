@@ -310,12 +310,25 @@ body.page-home .hero-main {
   display: block;
   height: auto;
   width: auto;
-  max-height: 44px;
   max-width: 100%;
   object-fit: contain;
   object-position: center;
   flex-shrink: 0;
 }
+
+.funder-logo-nfrf {
+  max-height: clamp(85px, 9.5vw, 115px);
+}
+
+.funder-logo-nserc {
+  max-height: clamp(28px, 3.2vw, 34px);
+}
+
+.funder-logo-crc {
+
+    max-height: clamp(70px, 9vw, 76px);
+  }
+
 
 /* Sections */
 .section {
@@ -656,15 +669,40 @@ body.page-organizers h1 {
   padding: 0;
   width: 100%;
   border: none;
-  line-height: 0;
-  background: #f4f4f4;
+  background: #fff;
 }
 
-.partners-strip {
-  width: 100%;
-  max-width: none;
-  height: auto;
+.partners-strip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(0.75rem, 3vw, 1.75rem);
+  width: min(100% - 2rem, 960px);
+  margin-inline: auto;
+  padding-block: 0.15rem;
+  padding-inline: clamp(1rem, 3vw, 1.5rem);
+}
+
+.partners-logo {
   display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 320px);
+  object-fit: contain;
+  object-position: center;
+  flex: 0 1 auto;
+}
+
+.partners-logo-creative-coast {
+  max-height: clamp(70px, 9.5vw, 120px);
+}
+
+.partners-logo-sfu {
+  max-height: clamp(30px, 3.8vw, 38px);
+}
+
+.partners-logo-uvic {
+  max-height: clamp(16px, 2vw, 22px);
 }
 
 .publication-link {
@@ -852,6 +890,13 @@ body.page-organizers h1 {
 
   .hero-funder-logos {
     justify-content: flex-start;
+  }
+
+  .partners-strip-inner {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.35rem;
+    padding-block: 0.15rem;
   }
 
   .projects-intro-card {

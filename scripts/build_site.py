@@ -326,7 +326,11 @@ def nav(current: str, prefix: str = "") -> str:
 def partners_strip(base: str = "") -> str:
     return f"""
   <footer class="site-partners" aria-label="Partner institutions">
-    <img src="{base}assets/images/partners-strip.png" alt="Creative Coast, Simon Fraser University, and University of Victoria" class="partners-strip">
+    <div class="partners-strip-inner">
+      <img src="{base}assets/images/creative-coast-logo.png" alt="Creative Coast" class="partners-logo partners-logo-creative-coast">
+      <img src="{base}assets/images/sfu-logo.png" alt="Simon Fraser University" class="partners-logo partners-logo-sfu">
+      <img src="{base}assets/images/uvic-logo.svg" alt="University of Victoria" class="partners-logo partners-logo-uvic">
+    </div>
   </footer>"""
 
 
@@ -421,9 +425,9 @@ def build_index() -> str:
         <div class="hero-funders">
           <p class="hero-funders-text">Thanks to our funders for making this possible:</p>
           <div class="hero-funder-logos">
-            <img src="assets/images/funder-nfrf.png" alt="New Frontiers in Research Fund">
-            <img src="assets/images/funder-nserc.png" alt="NSERC CRSNG">
-            <img src="assets/images/funder-crc.png" alt="Canada Research Chairs">
+            <img class="funder-logo funder-logo-nfrf" src="assets/images/funder-nfrf.png" alt="New Frontiers in Research Fund">
+            <img class="funder-logo funder-logo-nserc" src="assets/images/funder-nserc.png" alt="NSERC CRSNG">
+            <img class="funder-logo funder-logo-crc" src="assets/images/funder-crc.png" alt="Canada Research Chairs">
           </div>
         </div>
       </div>
@@ -433,7 +437,7 @@ def build_index() -> str:
       <div class="projects-panel">
         <div class="projects-intro">
           <div class="projects-intro-card">
-            <p class="projects-lead">Explore some of the new technology being developed at <strong>Simon Fraser University</strong> and <strong>University of Victoria</strong>.</p>
+            <p class="projects-lead">Explore some of the new technology being developed at Simon Fraser University and University of Victoria.</p>
             <div class="projects-topics">
               <p class="topics-label">Examples of latest research in:</p>
               <ul class="topic-tags">
