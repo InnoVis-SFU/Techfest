@@ -25,8 +25,6 @@ IMAGE_MAP = {
     "007d85_96c90a005b4c403f856d2f9e76be810b~mv2.png": "funder-nserc.png",
     "007d85_c05db668dc1b4f7fa2bb8dc9bee80133~mv2.png": "logo-minimal.png",
     "007d85_31122b9c45ea4c66a7aa96ef9b92d4f4~mv2.png": "logo-bw.png",
-    "007d85_7782dfb2b6564e57bc7fdabebd256e50~mv2.jpg": "sfu-logo.jpg",
-    "007d85_b4274974a593411db5103c2c46fe555f~mv2.png": "uvic-logo.png",
     "007d85_39fbb9be60fb498a972236f16cbc5d09~mv2.png": "creative-coast-logo.png",
     "007d85_2044938ec1a04275b10e4c2a57821621~mv2.png": "project-data-comics.png",
     "d838ea_afae918e7ed14cf498c8a3cb1363543a~mv2.png": "project-kiriphys.png",
@@ -45,10 +43,14 @@ MEDIA_JSON = Path(__file__).resolve().parent / "project_media.json"
 
 SITE_IMAGES = {
     "007d85_c05db668dc1b4f7fa2bb8dc9bee80133~mv2.png",
-    "007d85_7782dfb2b6564e57bc7fdabebd256e50~mv2.jpg",
-    "007d85_b4274974a593411db5103c2c46fe555f~mv2.png",
     "007d85_39fbb9be60fb498a972236f16cbc5d09~mv2.png",
     "007d85_31122b9c45ea4c66a7aa96ef9b92d4f4~mv2.png",
+}
+
+# Wix-hosted university logos were cropped; use official sources instead.
+OFFICIAL_LOGOS = {
+    "sfu-logo.png": "https://www.sfu.ca/etc/designs/clf/clientlibs/clf4/default/img/SFU@2x.png",
+    "uvic-logo.svg": "https://www.uvic.ca/assets/core-4-0/img/uvic-wordmark-colour.svg",
 }
 
 PROJECTS = [
@@ -270,8 +272,21 @@ def wix_original_url(media_id: str) -> str:
     return f"https://static.wixstatic.com/media/{media_id}"
 
 
+def download_official_logos() -> None:
+    for filename, url in OFFICIAL_LOGOS.items():
+        dest = ASSETS / filename
+        print(f"Downloading {filename} (official)...")
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=30) as response:
+                dest.write_bytes(response.read())
+        except Exception as exc:
+            print(f"  Failed {filename}: {exc}")
+
+
 def download_images() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
+    download_official_logos()
     use_original = {
         name
         for name in IMAGE_MAP.values()
@@ -343,7 +358,7 @@ def page_shell(
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{base}index.html">
-        <img src="{base}assets/images/logo-techfest.png" alt="Tech Fest logo" width="81" height="58">
+        <img src="{base}assets/images/logo-techfest.png" alt="Tech Fest logo" width="67" height="48">
       </a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -417,15 +432,22 @@ def build_index() -> str:
     <section class="section projects-section" id="projects">
       <div class="projects-panel">
         <div class="projects-intro">
-          <p class="projects-lead">Explore some of the new technology being developed at <strong>Simon Fraser University</strong> and <strong>University of Victoria</strong>.</p>
-          <p class="topics-label">Examples of latest research in:</p>
-          <ul class="topic-list-compact">
-            <li>Data visualization</li>
-            <li>Data activism</li>
-            <li>Smart materials</li>
-            <li>Human-computer interaction</li>
-          </ul>
+          <div class="projects-intro-card">
+            <p class="projects-lead">Explore some of the new technology being developed at <strong>Simon Fraser University</strong> and <strong>University of Victoria</strong>.</p>
+            <div class="projects-topics">
+              <p class="topics-label">Examples of latest research in:</p>
+              <ul class="topic-tags">
+                <li>Data visualization</li>
+                <li>Data activism</li>
+                <li>Smart materials</li>
+                <li>Human-computer interaction</li>
+              </ul>
+            </div>
+          </div>
         </div>
+        <header class="projects-header">
+          <h2 class="projects-title">Projects</h2>
+        </header>
         <div class="project-grid">
           {''.join(cards)}
         </div>
@@ -437,15 +459,15 @@ def build_index() -> str:
 
 def build_organizers() -> str:
     body = """
-    <section class="section page-header">
+    <section class="section">
       <div class="container narrow">
         <h1>Tech Fest Organizers</h1>
       </div>
-    </section>
-    <section class="section">
       <div class="container organizers-grid">
         <div class="org-block">
-          <img src="assets/images/sfu-logo.jpg" alt="Simon Fraser University" class="org-logo">
+          <div class="org-logo-frame">
+            <img src="assets/images/sfu-logo.png" alt="Simon Fraser University" class="org-logo">
+          </div>
           <h2>Simon Fraser University</h2>
           <ul class="org-list">
             <li><strong>Sheelagh Carpendale</strong></li>
@@ -454,7 +476,9 @@ def build_organizers() -> str:
           </ul>
         </div>
         <div class="org-block">
-          <img src="assets/images/uvic-logo.png" alt="University of Victoria" class="org-logo">
+          <div class="org-logo-frame">
+            <img src="assets/images/uvic-logo.svg" alt="University of Victoria" class="org-logo">
+          </div>
           <h2>University of Victoria</h2>
           <ul class="org-list">
             <li><strong>Charles Perin</strong></li>
@@ -465,7 +489,7 @@ def build_organizers() -> str:
       </div>
     </section>
     """
-    return page_shell("Tech Fest Organizers", "organizers", body)
+    return page_shell("Tech Fest Organizers", "organizers", body, body_class="page-organizers")
 
 
 def build_contact() -> str:
