@@ -483,7 +483,7 @@ def build_organizers() -> str:
           <ul class="org-list">
             <li><strong>Charles Perin</strong></li>
             <li><strong>Wei Wei</strong><br><span class="role">Tech Fest coordinator</span></li>
-            <li><strong>Sarian Kashanji</strong></li>
+            <li><strong>Sarian Kashanji</strong><br><span class="role">Tech Fest coordinator</span></li>
           </ul>
         </div>
       </div>
