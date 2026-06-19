@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Questrial&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body>
+<body class="page-contact">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="container header-inner">
@@ -36,7 +36,14 @@
       <div class="contact-page-inner">
         <h1>Contact</h1>
         <p class="lead">Let us know what you think!</p>
-        <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="form-success" id="form-success" hidden role="status">
+          <p><strong>Thank you!</strong> Your message was sent successfully.</p>
+        </div>
+        <form class="contact-form" action="https://formsubmit.co/sheelagh@sfu.ca" method="POST">
+          <input type="hidden" name="_subject" value="Tech Fest website contact form">
+          <input type="hidden" name="_next" value="https://innovis-sfu.github.io/Techfest/contact.html?sent=1">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="form-row">
             <label for="first-name">First name</label>
             <input id="first-name" name="first_name" type="text" autocomplete="given-name" required>
@@ -51,7 +58,7 @@
           </div>
           <div class="form-row">
             <label for="message">Message</label>
-            <textarea id="message" name="message" rows="6" required></textarea>
+            <textarea id="message" name="message" rows="4" required></textarea>
           </div>
           <button class="btn btn-primary" type="submit">Submit</button>
         </form>

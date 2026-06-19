@@ -53,6 +53,10 @@ OFFICIAL_LOGOS = {
     "uvic-logo.svg": "https://www.uvic.ca/assets/core-4-0/img/uvic-wordmark-colour.svg",
 }
 
+# FormSubmit delivers contact messages on static GitHub Pages (https://formsubmit.co).
+CONTACT_EMAIL = "sheelagh@sfu.ca"
+CONTACT_FORM_REDIRECT = "https://innovis-sfu.github.io/Techfest/contact.html?sent=1"
+
 PROJECTS = [
     {
         "num": "01",
@@ -470,10 +474,9 @@ def build_index() -> str:
 def build_organizers() -> str:
     body = """
     <section class="section">
-      <div class="container narrow">
+      <div class="container organizers-page">
         <h1>Tech Fest Organizers</h1>
-      </div>
-      <div class="container organizers-grid">
+        <div class="organizers-grid">
         <div class="org-block">
           <div class="org-logo-frame">
             <img src="assets/images/sfu-logo.png" alt="Simon Fraser University" class="org-logo">
@@ -496,6 +499,7 @@ def build_organizers() -> str:
             <li><strong>Sarian Kashanji</strong><br><span class="role">Tech Fest coordinator</span></li>
           </ul>
         </div>
+        </div>
       </div>
     </section>
     """
@@ -503,12 +507,19 @@ def build_organizers() -> str:
 
 
 def build_contact() -> str:
-    body = """
+    body = f"""
     <section class="section contact-page">
       <div class="contact-page-inner">
         <h1>Contact</h1>
         <p class="lead">Let us know what you think!</p>
-        <form class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="form-success" id="form-success" hidden role="status">
+          <p><strong>Thank you!</strong> Your message was sent successfully.</p>
+        </div>
+        <form class="contact-form" action="https://formsubmit.co/{esc(CONTACT_EMAIL)}" method="POST">
+          <input type="hidden" name="_subject" value="Tech Fest website contact form">
+          <input type="hidden" name="_next" value="{esc(CONTACT_FORM_REDIRECT)}">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="form-row">
             <label for="first-name">First name</label>
             <input id="first-name" name="first_name" type="text" autocomplete="given-name" required>
@@ -523,7 +534,7 @@ def build_contact() -> str:
           </div>
           <div class="form-row">
             <label for="message">Message</label>
-            <textarea id="message" name="message" rows="6" required></textarea>
+            <textarea id="message" name="message" rows="4" required></textarea>
           </div>
           <button class="btn btn-primary" type="submit">Submit</button>
         </form>
@@ -531,7 +542,7 @@ def build_contact() -> str:
       </div>
     </section>
     """
-    return page_shell("Contact", "contact", body)
+    return page_shell("Contact", "contact", body, body_class="page-contact")
 
 
 def build_project(p: dict) -> str:

@@ -47,11 +47,11 @@ To keep using `codesignexplore.com` without Wix:
 
 ## Contact form
 
-The Wix form does not work on static hosting. Options:
+The contact page uses [FormSubmit](https://formsubmit.co) so it works on static GitHub Pages. Messages go to `sheelagh@sfu.ca` (InnoVis lab contact).
 
-1. **Formspree** (recommended): Sign up at [formspree.io](https://formspree.io), create a form, then in `contact.html` replace `YOUR_FORM_ID` in the form action URL.
-2. **Google Form**: Embed or link to a Google Form instead.
-3. **mailto**: Replace the form with a mailto link to an organizer email.
+To use a different inbox, edit `CONTACT_EMAIL` and `CONTACT_FORM_REDIRECT` at the top of `scripts/build_site.py`, then run `python scripts/build_site.py`.
+
+**First submission:** FormSubmit sends a one-time activation link to that email address. Click it to enable the form.
 
 ## Updating content
 
