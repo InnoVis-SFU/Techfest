@@ -292,6 +292,7 @@ def download_images() -> None:
         for name in IMAGE_MAP.values()
         if name.startswith("funder-")
         or name.startswith("project-")
+        or name == "hero-bg.png"
         or "-media-" in name
     }
     for media_id, filename in IMAGE_MAP.items():
@@ -415,10 +416,15 @@ def build_index() -> str:
             </div>
             <div class="hero-event">
               <p class="hero-memory">In the memory of a successful tech festival held on July 31, 2024.</p>
-              <p>Morning session: 10:00 AM – 12:00 PM (Invitation only)</p>
-              <p>Afternoon Session: 2:00 – 4:00 PM (Everyone is welcome)</p>
-              <h2>Location:</h2>
-              <p>Room 660. Engineering &amp; Computer Science Building, University of Victoria</p>
+              <div class="hero-event-block">
+                <h2 class="hero-event-heading">Agenda</h2>
+                <p>Morning session: 10:00 AM – 12:00 PM (Invitation only)</p>
+                <p>Afternoon Session: 2:00 – 4:00 PM (Everyone is welcome)</p>
+              </div>
+              <div class="hero-event-block">
+                <h2 class="hero-event-heading">Location</h2>
+                <p>Room 660. Engineering &amp; Computer Science Building, University of Victoria</p>
+              </div>
             </div>
           </div>
         </div>

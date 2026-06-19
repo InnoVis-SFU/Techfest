@@ -42,7 +42,7 @@ a {
 }
 
 a:hover {
-  color: var(--purple);
+  color: var(--green);
 }
 
 .container {
@@ -127,7 +127,7 @@ a:hover {
 
 .site-nav a.active,
 .site-nav a:hover {
-  color: var(--purple);
+  color: var(--green);
 }
 
 /* Homepage */
@@ -169,6 +169,9 @@ body.page-home .hero-main {
 .hero-panel {
   width: min(100%, 1400px);
   margin-inline: auto;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 6px 28px rgba(107, 31, 50, 0.06);
 }
 
 .hero-main {
@@ -177,8 +180,34 @@ body.page-home .hero-main {
   align-items: center;
   justify-content: center;
   min-height: clamp(290px, 42vw, 510px);
-  padding: clamp(0.75rem, 2vw, 1.5rem) clamp(0.5rem, 2vw, 1.5rem) clamp(0.75rem, 2vw, 1.35rem);
+  padding: clamp(0.75rem, 2vw, 1.5rem) clamp(0.5rem, 2vw, 1.5rem) 0;
   overflow: hidden;
+}
+
+.hero-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 255, 255, 0.9) 34%,
+    rgba(255, 255, 255, 0.55) 58%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-main::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 60% at 92% 28%, rgba(196, 92, 108, 0.14) 0%, transparent 72%),
+    radial-gradient(ellipse 40% 50% at 8% 92%, rgba(139, 41, 66, 0.1) 0%, transparent 68%);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .hero-decor {
@@ -187,14 +216,16 @@ body.page-home .hero-main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
-  opacity: 0.45;
+  object-position: 72% 22%;
+  opacity: 1;
+  z-index: 0;
+  filter: saturate(1.12) contrast(1.04);
   pointer-events: none;
 }
 
 .hero-layout {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   width: min(100%, 1180px);
   margin-right: auto;
   margin-left: 0;
@@ -213,7 +244,7 @@ body.page-home .hero-main {
 .hero-circle {
   width: clamp(240px, 30vw, 380px);
   aspect-ratio: 1;
-  border: 2px solid #111;
+  border: 2px solid var(--green);
   border-radius: 50%;
   display: flex;
   flex-direction: column;
@@ -221,7 +252,9 @@ body.page-home .hero-main {
   justify-content: center;
   text-align: center;
   padding: 1.5rem;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 44px rgba(107, 31, 50, 0.14);
+  backdrop-filter: blur(6px);
 }
 
 .hero-circle-label {
@@ -233,6 +266,7 @@ body.page-home .hero-main {
   margin: 0 0 0.85rem;
   line-height: 1.35;
   max-width: 15rem;
+  color: var(--muted);
 }
 
 .hero-circle-title {
@@ -242,19 +276,43 @@ body.page-home .hero-main {
   text-transform: lowercase;
   margin: 0;
   line-height: 0.95;
+  color: var(--green-dark);
 }
 
 .hero-event {
   font-family: "Questrial", "DM Sans", sans-serif;
   max-width: 34rem;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(139, 41, 66, 0.14);
+  border-radius: var(--radius);
+  padding: clamp(1.15rem, 2.5vw, 1.65rem);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
 }
 
 .hero-memory {
   font-size: clamp(1rem, 1.8vw, 1.15rem);
   font-weight: 700;
   line-height: 1.45;
-  color: #111;
-  margin: 0 0 0.85rem;
+  color: var(--green-dark);
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(139, 41, 66, 0.12);
+}
+
+.hero-event-block + .hero-event-block {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(139, 41, 66, 0.08);
+}
+
+.hero-event-heading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin: 0 0 0.45rem;
 }
 
 .hero-event h2 {
@@ -285,9 +343,9 @@ body.page-home .hero-main {
   align-items: center;
   justify-content: space-between;
   gap: 1rem 2rem;
-  padding: 0.9rem clamp(0.25rem, 1.5vw, 1rem);
-  background: #fff;
-  border-top: 1px solid #e6e6e6;
+  padding: 0 clamp(0.75rem, 2vw, 1.25rem) 1rem;
+  background: linear-gradient(180deg, #fff 0%, #faf8f9 100%);
+  border-top: none;
 }
 
 .hero-funders-text {
@@ -325,10 +383,8 @@ body.page-home .hero-main {
 }
 
 .funder-logo-crc {
-
-    max-height: clamp(70px, 9vw, 76px);
-  }
-
+  max-height: clamp(70px, 9vw, 76px);
+}
 
 /* Sections */
 .section {
@@ -467,7 +523,7 @@ body.page-home .hero-main {
   width: 3.5rem;
   height: 4px;
   margin-top: 0.65rem;
-  background: var(--purple);
+  background: var(--green);
   border-radius: 2px;
 }
 
@@ -503,7 +559,7 @@ body.page-home .hero-main {
   display: inline-block;
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--purple);
+  color: var(--green);
   letter-spacing: 0.05em;
 }
 
@@ -776,7 +832,7 @@ body.page-organizers h1 {
 
 .form-row input:focus,
 .form-row textarea:focus {
-  outline: 2px solid var(--purple-light);
+  outline: 2px solid var(--green);
   border-color: transparent;
 }
 
@@ -803,7 +859,7 @@ body.page-organizers h1 {
 }
 
 .project-block h2 {
-  color: var(--purple);
+  color: var(--green-dark);
   font-size: 1.1rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -864,7 +920,7 @@ body.page-organizers h1 {
   .hero-main {
     min-height: auto;
     padding-top: 1.25rem;
-    padding-bottom: 1rem;
+    padding-bottom: 0;
   }
 
   .hero-layout {
@@ -881,6 +937,7 @@ body.page-organizers h1 {
   .hero-event {
     margin-inline: auto;
     text-align: left;
+    max-width: 100%;
   }
 
   .hero-funders {
