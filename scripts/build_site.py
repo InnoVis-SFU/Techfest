@@ -392,12 +392,17 @@ def page_shell(
 def build_index() -> str:
     cards = []
     for p in PROJECTS:
+        image_class = "project-card-image"
+        if p["num"] == "07":
+            image_class += " project-card-image-white"
+        if p["num"] in ("09", "10"):
+            image_class += " project-card-image-contain project-card-image-white"
         cards.append(
             f"""
         <article class="project-card">
           <span class="project-num">{esc(p['num'])}</span>
           <h3>{esc(p['title'])}</h3>
-          <div class="project-card-image">
+          <div class="{image_class}">
             <img src="assets/images/{esc(p['card_image'])}" alt="" loading="lazy">
           </div>
           <p class="project-contact"><strong>Explore this project with:</strong> {esc(p['contact'])}</p>
