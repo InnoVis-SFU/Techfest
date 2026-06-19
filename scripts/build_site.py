@@ -19,8 +19,10 @@ PROJECTS_DIR = ROOT / "projects"
 
 # Wix media id -> local filename
 IMAGE_MAP = {
-    "007d85_149815deb35041f1b1a6a80a7b3537b3~mv2.png": "hero-banner.png",
-    "007d85_96c90a005b4c403f856d2f9e76be810b~mv2.png": "nserc-logo.png",
+    "007d85_149815deb35041f1b1a6a80a7b3537b3~mv2.png": "hero-bg.png",
+    "007d85_10a87d857a314ac99865ded900bbc630~mv2.png": "funder-nfrf.png",
+    "007d85_b07c3ef63e3e400f988198bca56fc12d~mv2.png": "funder-crc.png",
+    "007d85_96c90a005b4c403f856d2f9e76be810b~mv2.png": "funder-nserc.png",
     "007d85_c05db668dc1b4f7fa2bb8dc9bee80133~mv2.png": "logo-minimal.png",
     "007d85_31122b9c45ea4c66a7aa96ef9b92d4f4~mv2.png": "logo-bw.png",
     "007d85_7782dfb2b6564e57bc7fdabebd256e50~mv2.jpg": "sfu-logo.jpg",
@@ -207,13 +209,22 @@ def wix_url(media_id: str, width: int = 1200) -> str:
     )
 
 
+def wix_original_url(media_id: str) -> str:
+    return f"https://static.wixstatic.com/media/{media_id}"
+
+
 def download_images() -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
+    use_original = {
+        name
+        for name in IMAGE_MAP.values()
+        if name.startswith("funder-") or name.startswith("project-")
+    }
     for media_id, filename in IMAGE_MAP.items():
         dest = ASSETS / filename
-        if dest.exists():
+        if dest.exists() and filename not in use_original:
             continue
-        url = wix_url(media_id)
+        url = wix_original_url(media_id) if filename in use_original else wix_url(media_id)
         print(f"Downloading {filename}...")
         try:
             urllib.request.urlretrieve(url, dest)
@@ -238,6 +249,15 @@ def nav(current: str, prefix: str = "") -> str:
     return "\n".join(links)
 
 
+def partners_strip(base: str = "") -> str:
+    return f"""
+  <section class="section site-partners" aria-label="Partner institutions">
+    <div class="container">
+      <img src="{base}assets/images/partners-strip.png" alt="Creative Coast, Simon Fraser University, and University of Victoria" class="partners-strip">
+    </div>
+  </section>"""
+
+
 def page_shell(
     title: str,
     current: str,
@@ -258,7 +278,7 @@ def page_shell(
   <link rel="icon" href="{base}assets/images/logo-minimal.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Questrial&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{base}assets/css/styles.css">
 </head>
 <body{body_attr}>
@@ -266,7 +286,7 @@ def page_shell(
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{base}index.html">
-        <img src="{base}assets/images/logo-bw.png" alt="Tech Fest logo" width="120" height="40">
+        <img src="{base}assets/images/logo-techfest.png" alt="Tech Fest logo" width="100" height="72">
       </a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
@@ -281,6 +301,7 @@ def page_shell(
   <main id="main">
     {body}
   </main>
+  {partners_strip(base)}
   <footer class="site-footer">
     <div class="container footer-inner">
       <nav aria-label="Footer">
@@ -304,62 +325,63 @@ def build_index() -> str:
             f"""
         <article class="project-card">
           <span class="project-num">{esc(p['num'])}</span>
+          <h3>{esc(p['title'])}</h3>
           <div class="project-card-image">
             <img src="assets/images/{esc(p['card_image'])}" alt="" loading="lazy">
           </div>
-          <h3>{esc(p['title'])}</h3>
-          <p class="project-members"><strong>Project members:</strong> {esc(p['members'])}</p>
           <p class="project-contact"><strong>Explore this project with:</strong> {esc(p['contact'])}</p>
+          <p class="project-members"><strong>Project members:</strong> {esc(p['members'])}</p>
           <a class="btn btn-outline" href="projects/{esc(p['slug'])}.html">Read More</a>
         </article>"""
         )
 
     body = f"""
-    <section class="hero">
-      <div class="hero-banner">
-        <img src="assets/images/hero-banner.png" alt="Tech Fest promotional banner with green and purple design">
-      </div>
-      <div class="hero-intro container">
-        <p class="eyebrow">In memory of</p>
-        <h1>Tech Fest</h1>
-        <div class="event-details">
-          <h2>Date &amp; time</h2>
-          <p><strong>July 31, 2024</strong></p>
-          <p>Morning session: 10:00 AM – 12:00 PM (Invitation only)</p>
-          <p>Afternoon Session: 2:00 – 4:00 PM (Everyone is welcome)</p>
-          <h2>Location</h2>
-          <p>Room 660, Engineering &amp; Computer Science Building, University of Victoria</p>
+    <section class="hero" aria-label="Tech Fest introduction">
+      <div class="hero-panel">
+        <div class="hero-main">
+          <img class="hero-decor" src="assets/images/hero-bg.png" alt="" aria-hidden="true">
+          <div class="hero-layout">
+            <div class="hero-brand">
+              <div class="hero-circle">
+                <p class="hero-circle-label">Exhibition &amp; Discussion</p>
+                <p class="hero-circle-title">tech fest</p>
+              </div>
+            </div>
+            <div class="hero-event">
+              <p class="hero-memory">In the memory of a successful tech festival held on July 31, 2024.</p>
+              <p>Morning session: 10:00 AM – 12:00 PM (Invitation only)</p>
+              <p>Afternoon Session: 2:00 – 4:00 PM (Everyone is welcome)</p>
+              <h2>Location:</h2>
+              <p>Room 660. Engineering &amp; Computer Science Building, University of Victoria</p>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="section funders">
-      <div class="container">
-        <h2>Thanks to our funders for making this possible</h2>
-        <img class="funder-logo" src="assets/images/nserc-logo.png" alt="NSERC logo">
+        <div class="hero-funders">
+          <p class="hero-funders-text">Thanks to our funders for making this possible:</p>
+          <div class="hero-funder-logos">
+            <img src="assets/images/funder-nfrf.png" alt="New Frontiers in Research Fund">
+            <img src="assets/images/funder-nserc.png" alt="NSERC CRSNG">
+            <img src="assets/images/funder-crc.png" alt="Canada Research Chairs">
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="section projects-section" id="projects">
-      <div class="container">
-        <h2>Projects</h2>
+      <div class="projects-panel">
+        <div class="projects-intro">
+          <p class="projects-lead">Explore some of the new technology being developed at <strong>Simon Fraser University</strong> and <strong>University of Victoria</strong>.</p>
+          <p class="topics-label">Examples of latest research in:</p>
+          <ul class="topic-list-compact">
+            <li>Data visualization</li>
+            <li>Data activism</li>
+            <li>Smart materials</li>
+            <li>Human-computer interaction</li>
+          </ul>
+        </div>
         <div class="project-grid">
           {''.join(cards)}
         </div>
-      </div>
-    </section>
-
-    <section class="section invite">
-      <div class="container invite-inner">
-        <h2>Join us to explore new technology</h2>
-        <p>Join us to explore some of the new technology being developed at <strong>Simon Fraser University</strong> and <strong>University of Victoria</strong>.</p>
-        <p class="topics-label">Examples of latest research in:</p>
-        <ul class="topic-list">
-          <li>Data visualization</li>
-          <li>Data activism</li>
-          <li>Smart materials</li>
-          <li>Human-computer interaction</li>
-        </ul>
       </div>
     </section>
     """
